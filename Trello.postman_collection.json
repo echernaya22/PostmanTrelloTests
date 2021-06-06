@@ -1,0 +1,1609 @@
+{
+	"info": {
+		"_postman_id": "08a617e6-7ea2-4c0a-80c6-5ec78061c9c4",
+		"name": "Trello",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Test archive card",
+			"item": [
+				{
+					"name": "Create a board",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('boardId', pm.response.json().id)\r",
+									"\r",
+									"pm.test(\"Board is created\", function () {\r",
+									"    pm.expect(pm.response.json().name).to.eql(pm.collectionVariables.get('boardName'));  \r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"boardName\", \"EPAM_test\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}1/boards/?name={{boardName}}&key={{API_KEY}}&token={{API_TOKEN}}",
+							"host": [
+								"{{BASE_URL}}1"
+							],
+							"path": [
+								"boards",
+								""
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "{{boardName}}"
+								},
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{API_TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create list",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"listName\", \"Test list name\");\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Name is expected\", function() {\r",
+									"    pm.expect(pm.response.json().name).to.eq(pm.collectionVariables.get('listName'));\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Board id is expected\", function() {\r",
+									"    pm.expect(pm.response.json().idBoard).to.eq(pm.collectionVariables.get('boardId'));\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const firstListId = pm.collectionVariables.set('firstListId', pm.response.json().id)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}1/lists/?key={{API_KEY}}&token={{API_TOKEN}}&name={{listName}}&idBoard={{boardId}}",
+							"host": [
+								"{{BASE_URL}}1"
+							],
+							"path": [
+								"lists",
+								""
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{API_TOKEN}}"
+								},
+								{
+									"key": "name",
+									"value": "{{listName}}"
+								},
+								{
+									"key": "idBoard",
+									"value": "{{boardId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create first card",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('firstCardName', 'Some Card')\r",
+									"pm.collectionVariables.set('firstCardDescr', 'This card is to be moved')\r",
+									"\r",
+									"pm.collectionVariables.set('listId', pm.collectionVariables.get('firstListId'))"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Card is creeated\", function() {\r",
+									"    pm.expect(pm.response.json().name).to.eq(pm.collectionVariables.get('firstCardName'))\r",
+									"    pm.expect(pm.response.json().desc).to.eq(pm.collectionVariables.get('firstCardDescr'))\r",
+									"    pm.expect(pm.response.json().idList).to.eq(pm.collectionVariables.get('listId'))\r",
+									"})\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}1/cards/?key={{API_KEY}}&token={{API_TOKEN}}&name={{firstCardName}}&desc={{firstCardDescr}}&idList={{listId}}",
+							"host": [
+								"{{BASE_URL}}1"
+							],
+							"path": [
+								"cards",
+								""
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{API_TOKEN}}"
+								},
+								{
+									"key": "name",
+									"value": "{{firstCardName}}"
+								},
+								{
+									"key": "desc",
+									"value": "{{firstCardDescr}}"
+								},
+								{
+									"key": "idList",
+									"value": "{{listId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create second card",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('secondCardName', 'Second')\r",
+									"pm.collectionVariables.set('secondCardDescr', 'So this card too')\r",
+									"pm.collectionVariables.set('listId', pm.collectionVariables.get('firstListId'))"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Card is creeated\", function() {\r",
+									"    pm.expect(pm.response.json().name).to.eq(pm.collectionVariables.get('secondCardName'))\r",
+									"    pm.expect(pm.response.json().desc).to.eq(pm.collectionVariables.get('secondCardDescr'))\r",
+									"    pm.expect(pm.response.json().idList).to.eq(pm.collectionVariables.get('listId'))\r",
+									"})\r",
+									"\r",
+									"pm.collectionVariables.set('secondCardId', pm.response.json().id)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}1/cards/?key={{API_KEY}}&token={{API_TOKEN}}&name={{secondCardName}}&desc={{secondCardDescr}}&idList={{listId}}",
+							"host": [
+								"{{BASE_URL}}1"
+							],
+							"path": [
+								"cards",
+								""
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{API_TOKEN}}"
+								},
+								{
+									"key": "name",
+									"value": "{{secondCardName}}"
+								},
+								{
+									"key": "desc",
+									"value": "{{secondCardDescr}}"
+								},
+								{
+									"key": "idList",
+									"value": "{{listId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Archive second card",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"//var secondCardId = pm.collectionVariables.get(pm.response.json().id)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}1/cards/{{secondCardId}}?key={{API_KEY}}&token={{API_TOKEN}}&closed=true",
+							"host": [
+								"{{BASE_URL}}1"
+							],
+							"path": [
+								"cards",
+								"{{secondCardId}}"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{API_TOKEN}}"
+								},
+								{
+									"key": "closed",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check that card is moved from list",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check card in list\", function () {\r",
+									"    pm.expect(pm.response.json()[0].name).to.eq(pm.collectionVariables.get('firstCardName'))\r",
+									"    pm.expect(pm.response.json()[0].desc).to.eq(pm.collectionVariables.get('firstCardDescr'))\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Size is correct\", function () {\r",
+									"    pm.expect(pm.response.json().length).to.eq(1);\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}1/lists/{{firstListId}}/cards?key={{API_KEY}}&token={{API_TOKEN}}",
+							"host": [
+								"{{BASE_URL}}1"
+							],
+							"path": [
+								"lists",
+								"{{firstListId}}",
+								"cards"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{API_TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a board",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.clear();"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}1/boards/{{boardId}}?key={{API_KEY}}&token={{API_TOKEN}}",
+							"host": [
+								"{{BASE_URL}}1"
+							],
+							"path": [
+								"boards",
+								"{{boardId}}"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{API_TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Test creating a list",
+			"item": [
+				{
+					"name": "Create a board",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('boardId', pm.response.json().id)\r",
+									"\r",
+									"pm.test(\"Board is created\", function () {\r",
+									"    pm.expect(pm.response.json().name).to.eql(pm.collectionVariables.get('boardName'));    \r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"boardName\", \"EPAM_test\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}1/boards/?name={{boardName}}&key={{API_KEY}}&token={{API_TOKEN}}",
+							"host": [
+								"{{BASE_URL}}1"
+							],
+							"path": [
+								"boards",
+								""
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "{{boardName}}"
+								},
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{API_TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a list",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"listName\", \"Some List\");\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Name is correct\", function() {\r",
+									"    pm.expect(pm.response.json().name).to.eq(pm.collectionVariables.get('listName'));\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Board id is correct\", function() {\r",
+									"    pm.expect(pm.response.json().idBoard).to.eq(pm.collectionVariables.get('boardId'));\r",
+									"})\r",
+									"\r",
+									"pm.collectionVariables.set('listId', pm.response.json().id)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}1/lists/?key={{API_KEY}}&token={{API_TOKEN}}&name={{listName}}&idBoard={{boardId}}",
+							"host": [
+								"{{BASE_URL}}1"
+							],
+							"path": [
+								"lists",
+								""
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{API_TOKEN}}"
+								},
+								{
+									"key": "name",
+									"value": "{{listName}}"
+								},
+								{
+									"key": "idBoard",
+									"value": "{{boardId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check that list is created",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"List is created\", function() {\r",
+									"    pm.expect(pm.response.json().name).to.eq(pm.collectionVariables.get('listName'));\r",
+									"    pm.expect(pm.response.json().id).to.eq(pm.collectionVariables.get('listId'));\r",
+									"    pm.expect(pm.response.json().idBoard).to.eq(pm.collectionVariables.get('boardId'));\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}1/lists/{{listId}}?key={{API_KEY}}&token={{API_TOKEN}}&name={{listName}}&idBoard={{boardId}}",
+							"host": [
+								"{{BASE_URL}}1"
+							],
+							"path": [
+								"lists",
+								"{{listId}}"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{API_TOKEN}}"
+								},
+								{
+									"key": "name",
+									"value": "{{listName}}"
+								},
+								{
+									"key": "idBoard",
+									"value": "{{boardId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a board",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.clear();"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}1/boards/{{boardId}}?key={{API_KEY}}&token={{API_TOKEN}}",
+							"host": [
+								"{{BASE_URL}}1"
+							],
+							"path": [
+								"boards",
+								"{{boardId}}"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{API_TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Test updating a board",
+			"item": [
+				{
+					"name": "Create a board",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('boardId', pm.response.json().id)\r",
+									"\r",
+									"pm.test(\"Board is created\", function () {\r",
+									"    pm.expect(pm.response.json().name).to.eql(pm.collectionVariables.get('boardName'));  \r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"boardName\", \"EPAM_test\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}1/boards/?name={{boardName}}&key={{API_KEY}}&token={{API_TOKEN}}",
+							"host": [
+								"{{BASE_URL}}1"
+							],
+							"path": [
+								"boards",
+								""
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "{{boardName}}"
+								},
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{API_TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a board",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('name', 'Update Name')\r",
+									"pm.collectionVariables.set('desc', 'Some very interesting desc')\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}1/boards/{{boardId}}?key={{API_KEY}}&token={{API_TOKEN}}&name={{name}}&desc={{desc}}",
+							"host": [
+								"{{BASE_URL}}1"
+							],
+							"path": [
+								"boards",
+								"{{boardId}}"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{API_TOKEN}}"
+								},
+								{
+									"key": "name",
+									"value": "{{name}}"
+								},
+								{
+									"key": "desc",
+									"value": "{{desc}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get updated name",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Name is changed\", function() {\r",
+									"    pm.expect(pm.response.text()).to.contain(pm.collectionVariables.get('name'));\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}1/boards/{{boardId}}/name/?key={{API_KEY}}&token={{API_TOKEN}}",
+							"host": [
+								"{{BASE_URL}}1"
+							],
+							"path": [
+								"boards",
+								"{{boardId}}",
+								"name",
+								""
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{API_TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get updated description",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Desc is changed\", function() {\r",
+									"    pm.expect(pm.response.text()).to.contain(pm.collectionVariables.get('desc'));\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}1/boards/{{boardId}}/desc/?key={{API_KEY}}&token={{API_TOKEN}}",
+							"host": [
+								"{{BASE_URL}}1"
+							],
+							"path": [
+								"boards",
+								"{{boardId}}",
+								"desc",
+								""
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{API_TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a board",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.clear();"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}1/boards/{{boardId}}?key={{API_KEY}}&token={{API_TOKEN}}",
+							"host": [
+								"{{BASE_URL}}1"
+							],
+							"path": [
+								"boards",
+								"{{boardId}}"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{API_TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Test deleting a board",
+			"item": [
+				{
+					"name": "Create a board",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('boardId', pm.response.json().id)\r",
+									"\r",
+									"pm.test(\"Board is created\", function () {\r",
+									"    pm.expect(pm.response.json().name).to.eql(pm.collectionVariables.get('boardName'));  \r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"boardName\", \"EPAM_test\");\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}1/boards/?name={{boardName}}&key={{API_KEY}}&token={{API_TOKEN}}",
+							"host": [
+								"{{BASE_URL}}1"
+							],
+							"path": [
+								"boards",
+								""
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "{{boardName}}"
+								},
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{API_TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a board",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}1/boards/{{boardId}}?key={{API_KEY}}&token={{API_TOKEN}}",
+							"host": [
+								"{{BASE_URL}}1"
+							],
+							"path": [
+								"boards",
+								"{{boardId}}"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{API_TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check deleting board",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Board id not found in the board list\", function () {\r",
+									"    pm.expect(pm.response.text()).to.not.include(pm.collectionVariables.get(\"boardId\"));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.collectionVariables.clear();"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}1/boards/{{boardId}}?key={{API_KEY}}&token={{API_TOKEN}}",
+							"host": [
+								"{{BASE_URL}}1"
+							],
+							"path": [
+								"boards",
+								"{{boardId}}"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{API_TOKEN}}"
+								},
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Test moving card from list to list",
+			"item": [
+				{
+					"name": "Create a board",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('boardId', pm.response.json().id)\r",
+									"\r",
+									"pm.test(\"Board is created\", function () {\r",
+									"    pm.expect(pm.response.json().name).to.eql(pm.collectionVariables.get('boardName'));  \r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"boardName\", \"EPAM_test\");\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}1/boards/?name={{boardName}}&key={{API_KEY}}&token={{API_TOKEN}}",
+							"host": [
+								"{{BASE_URL}}1"
+							],
+							"path": [
+								"boards",
+								""
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "{{boardName}}"
+								},
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{API_TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create first list",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"firstListName\", \"First List\");\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Name is correct\", function() {\r",
+									"    pm.expect(pm.response.json().name).to.eq(pm.collectionVariables.get('firstListName'));\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Board id is correct\", function() {\r",
+									"    pm.expect(pm.response.json().idBoard).to.eq(pm.collectionVariables.get('boardId'));\r",
+									"})\r",
+									"\r",
+									"\r",
+									"pm.collectionVariables.set('firstListId', pm.response.json().id)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}1/lists/?key={{API_KEY}}&token={{API_TOKEN}}&name={{firstListName}}&idBoard={{boardId}}",
+							"host": [
+								"{{BASE_URL}}1"
+							],
+							"path": [
+								"lists",
+								""
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{API_TOKEN}}"
+								},
+								{
+									"key": "name",
+									"value": "{{firstListName}}"
+								},
+								{
+									"key": "idBoard",
+									"value": "{{boardId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create second list",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"secondListName\", \"Second List\");\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Name is correct\", function() {\r",
+									"    pm.expect(pm.response.json().name).to.eq(pm.collectionVariables.get('secondListName'));\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Board id is correct\", function() {\r",
+									"    pm.expect(pm.response.json().idBoard).to.eq(pm.collectionVariables.get('boardId'));\r",
+									"})\r",
+									"\r",
+									"pm.collectionVariables.set('secondListId', pm.response.json().id)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}1/lists/?key={{API_KEY}}&token={{API_TOKEN}}&name={{secondListName}}&idBoard={{boardId}}",
+							"host": [
+								"{{BASE_URL}}1"
+							],
+							"path": [
+								"lists",
+								""
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{API_TOKEN}}"
+								},
+								{
+									"key": "name",
+									"value": "{{secondListName}}"
+								},
+								{
+									"key": "idBoard",
+									"value": "{{boardId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create first card",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('firstCardName', pm.response.json().name)\r",
+									"pm.collectionVariables.set('firstCardDesc', pm.response.json().desc)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}1/cards/?key={{API_KEY}}&token={{API_TOKEN}}&name=Some Card&desc=This card is to be moved&idList={{firstListId}}",
+							"host": [
+								"{{BASE_URL}}1"
+							],
+							"path": [
+								"cards",
+								""
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{API_TOKEN}}"
+								},
+								{
+									"key": "name",
+									"value": "Some Card"
+								},
+								{
+									"key": "desc",
+									"value": "This card is to be moved"
+								},
+								{
+									"key": "idList",
+									"value": "{{firstListId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create second card",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('secondCardName', pm.response.json().name)\r",
+									"pm.collectionVariables.set('secondCardDesc', pm.response.json().desc)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}1/cards/?key={{API_KEY}}&token={{API_TOKEN}}&name=Second&desc=So this card too&idList={{firstListId}}",
+							"host": [
+								"{{BASE_URL}}1"
+							],
+							"path": [
+								"cards",
+								""
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{API_TOKEN}}"
+								},
+								{
+									"key": "name",
+									"value": "Second"
+								},
+								{
+									"key": "desc",
+									"value": "So this card too"
+								},
+								{
+									"key": "idList",
+									"value": "{{firstListId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Move all cards",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}1/lists/{{firstListId}}/moveAllCards?key={{API_KEY}}&token={{API_TOKEN}}&idBoard={{boardId}}&idList={{secondListId}}",
+							"host": [
+								"{{BASE_URL}}1"
+							],
+							"path": [
+								"lists",
+								"{{firstListId}}",
+								"moveAllCards"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{API_TOKEN}}"
+								},
+								{
+									"key": "idBoard",
+									"value": "{{boardId}}"
+								},
+								{
+									"key": "idList",
+									"value": "{{secondListId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check all cards are moved",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"The first card is moved\", function () {\r",
+									"    pm.expect(pm.response.json()[0].name).to.eq(pm.collectionVariables.get('firstCardName'))\r",
+									"    pm.expect(pm.response.json()[0].desc).to.eq(pm.collectionVariables.get('firstCardDesc'))\r",
+									"})\r",
+									"\r",
+									"pm.test(\"The second card is moved\", function () {\r",
+									"    pm.expect(pm.response.json()[1].name).to.eq(pm.collectionVariables.get('secondCardName'))\r",
+									"    pm.expect(pm.response.json()[1].desc).to.eq(pm.collectionVariables.get('secondCardDesc'))\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Size is correct\", function () {\r",
+									"    pm.expect(pm.response.json().length).to.eq(2);\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}1/lists/{{secondListId}}/cards?key={{API_KEY}}&token={{API_TOKEN}}",
+							"host": [
+								"{{BASE_URL}}1"
+							],
+							"path": [
+								"lists",
+								"{{secondListId}}",
+								"cards"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{API_TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a board",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.clear();"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}1/boards/{{boardId}}?key={{API_KEY}}&token={{API_TOKEN}}",
+							"host": [
+								"{{BASE_URL}}1"
+							],
+							"path": [
+								"boards",
+								"{{boardId}}"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "token",
+									"value": "{{API_TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						]
+					}
+				}
+			]
+		}
+	]
+}
